@@ -27,6 +27,7 @@ namespace NzbDrone.Core.Movies
         PagingSpec<Movie> MoviesWhereCutoffUnmet(PagingSpec<Movie> pagingSpec, List<QualitiesBelowCutoff> qualitiesBelowCutoff);
         Movie FindByPath(string path);
         List<string> AllMoviePaths();
+        List<int> AllMovieTmdbIds();
     }
 
     public class MovieRepository : BasicRepository<Movie>, IMovieRepository
@@ -217,6 +218,14 @@ namespace NzbDrone.Core.Movies
             using (var conn = _database.OpenConnection())
             {
                 return conn.Query<string>("SELECT Path FROM Movies").ToList();
+            }
+        }
+
+        public List<int> AllMovieTmdbIds()
+        {
+            using (var conn = _database.OpenConnection())
+            {
+                return conn.Query<int>("SELECT TmdbId FROM Movies").ToList();
             }
         }
     }

@@ -30,6 +30,7 @@ namespace NzbDrone.Core.Movies
         Movie FindByTitleSlug(string slug);
         Movie FindByPath(string path);
         List<string> AllMoviePaths();
+        List<int> AllMovieTmdbIds();
         bool MovieExists(Movie movie);
         List<Movie> GetMoviesByFileId(int fileId);
         List<Movie> GetMoviesBetweenDates(DateTime start, DateTime end, bool includeUnmonitored);
@@ -179,6 +180,11 @@ namespace NzbDrone.Core.Movies
         public List<string> AllMoviePaths()
         {
             return _movieRepository.AllMoviePaths();
+        }
+
+        public List<int> AllMovieTmdbIds()
+        {
+            return _movieRepository.AllMovieTmdbIds();
         }
 
         public void DeleteMovie(int movieId, bool deleteFiles, bool addExclusion = false)
@@ -354,7 +360,7 @@ namespace NzbDrone.Core.Movies
         public List<Movie> GetRecommendedMovies()
         {
             // Get all recommended movies, plus all movies on enabled lists
-            var netImportMovies = new List<Movie>();
+            var importListMovies = new List<Movie>();
 
             var allMovies = GetAllMovies();
 
@@ -367,10 +373,10 @@ namespace NzbDrone.Core.Movies
 
             foreach (var recommendation in distinctRecommendations)
             {
-                netImportMovies.Add(new Movie { TmdbId = recommendation });
+                importListMovies.Add(new Movie { TmdbId = recommendation });
             }
 
-            return netImportMovies;
+            return importListMovies;
         }
 
         public void Handle(MovieFileAddedEvent message)
